@@ -1,0 +1,13 @@
+{
+  "name": "ric-alarm-viewer",
+  "version": "0.1.0",
+  "description": "A small Non-RT RIC-style dashboard that lists and filters alarms from RAN nodes.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "license": "MIT"
+}

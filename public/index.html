@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RIC Alarm Viewer</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        margin: 2rem;
+        color: #1a1a1a;
+        background: #fafafa;
+      }
+      h1 {
+        margin-bottom: 0.25rem;
+      }
+      p.blurb {
+        color: #555;
+        margin-top: 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 1rem;
+        background: #fff;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      th {
+        background: #f0f0f0;
+      }
+      td.ack-true {
+        color: #2e7d32;
+      }
+      td.ack-false {
+        color: #c62828;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>RIC Alarm Viewer</h1>
+    <p class="blurb">
+      Live view of alarms reported by RAN nodes, served by a small Non-RT
+      RIC-style Express service.
+    </p>
+
+    <table id="alarms">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Node</th>
+          <th>Cell</th>
+          <th>Severity</th>
+          <th>Type</th>
+          <th>Acknowledged</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="6">Loading alarms…</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      // Fetch alarms from the API and render them into the table body.
+      fetch('/api/alarms')
+        .then((response) => response.json())
+        .then((alarms) => {
+          const tbody = document.querySelector('#alarms tbody');
+          tbody.innerHTML = '';
+          alarms.forEach((alarm) => {
+            const row = document.createElement('tr');
+            row.innerHTML =
+              '<td>' + alarm.id + '</td>' +
+              '<td>' + alarm.nodeId + '</td>' +
+              '<td>' + alarm.cellId + '</td>' +
+              '<td>' + alarm.severity + '</td>' +
+              '<td>' + alarm.type + '</td>' +
+              '<td class="ack-' + alarm.acknowledged + '">' +
+                (alarm.acknowledged ? 'yes' : 'no') +
+              '</td>';
+            tbody.appendChild(row);
+          });
+        })
+        .catch((err) => {
+          const tbody = document.querySelector('#alarms tbody');
+          tbody.innerHTML =
+            '<tr><td colspan="6">Failed to load alarms: ' + err + '</td></tr>';
+        });
+    </script>
+  </body>
+</html>
